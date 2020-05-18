@@ -8,16 +8,17 @@ import (
 
 func insertionSort(arr []int) []int {
 
-	for i, _ := range arr {
-		for j := 0; j < i; j++ {
-			if arr[i] < arr[j] {
-				tmp := arr[i]
-				for z := i; z > j; z-- {
-					arr[z] = arr[z-1]
-				}
-				arr[j] = tmp
+	for i := 1; i < len(arr); i++ {
+		tmp := arr[i]
+		j := 0
+		for j = i; j > 0; j-- {
+			if tmp < arr[j-1] {
+				arr[j] = arr[j-1]
+			} else {
+				break
 			}
 		}
+		arr[j] = tmp
 	}
 
 	return arr
