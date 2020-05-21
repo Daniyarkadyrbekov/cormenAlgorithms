@@ -1,6 +1,8 @@
 package sort
 
 import (
+	"fmt"
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -26,7 +28,7 @@ func insertionSort(arr []int) []int {
 
 func recursiveSort(arr []int) []int {
 
-	if len(arr) == 1 {
+	if len(arr) <= 1 {
 		return arr
 	}
 	splitter := len(arr) / 2
@@ -62,6 +64,41 @@ func mergeSortedArr(left, right []int) []int {
 	return result
 }
 
+func selectSortExtraArr(arr []int) []int {
+
+	sorted := make([]int, len(arr))
+	for i := 0; i < len(arr); i++ {
+		min := math.MaxInt32
+		for j := i; j < len(arr); j++ {
+			if arr[j] < min {
+				min = arr[j]
+			}
+		}
+		sorted[i] = min
+	}
+
+	return sorted
+}
+
+func selectSort(arr []int) []int {
+
+	for i := 0; i < len(arr); i++ {
+		min := math.MaxInt32
+		minI := min
+		for j := i; j < len(arr); j++ {
+			if arr[j] < min {
+				min = arr[j]
+				minI = j
+			}
+		}
+
+		arr[minI] = arr[i]
+		arr[i] = min
+	}
+
+	return arr
+}
+
 func TestMerge(t *testing.T) {
 	arrl := []int{1, 4, 18}
 	arrR := []int{2, 3, 5, 6, 7}
@@ -69,7 +106,36 @@ func TestMerge(t *testing.T) {
 }
 
 func TestSorts(t *testing.T) {
-	arr := []int{1, 2, 2, 14, 1, 17, 19, -2, 0, 18, 120, 15}
-	require.Equal(t, []int{-2, 0, 1, 1, 2, 2, 14, 15, 17, 18, 19, 120}, insertionSort(arr))
-	require.Equal(t, []int{-2, 0, 1, 1, 2, 2, 14, 15, 17, 18, 19, 120}, recursiveSort(arr))
+
+	for i, arr := range []struct {
+		unsorted []int
+		sorted   []int
+	}{
+		{
+			unsorted: []int{},
+			sorted:   []int{},
+		},
+		{
+			unsorted: []int{1},
+			sorted:   []int{1},
+		},
+		{
+			unsorted: []int{-2, 0, 1, 1, 2, 2, 14, 15, 17, 18, 19, 120},
+			sorted:   []int{-2, 0, 1, 1, 2, 2, 14, 15, 17, 18, 19, 120},
+		},
+		{
+			unsorted: []int{120, 19, 18, 17, 15, 14, 2, 2, 1, 1, 0, -2},
+			sorted:   []int{-2, 0, 1, 1, 2, 2, 14, 15, 17, 18, 19, 120},
+		},
+		{
+			unsorted: []int{1, 2, 2, 14, 1, 17, 19, -2, 0, 18, 120, 15},
+			sorted:   []int{-2, 0, 1, 1, 2, 2, 14, 15, 17, 18, 19, 120},
+		},
+	} {
+		fmt.Printf("i = %d\n", i)
+		require.Equal(t, arr.sorted, insertionSort(arr.unsorted))
+		require.Equal(t, arr.sorted, recursiveSort(arr.unsorted))
+		require.Equal(t, arr.sorted, selectSortExtraArr(arr.unsorted))
+		require.Equal(t, arr.sorted, selectSort(arr.unsorted))
+	}
 }
