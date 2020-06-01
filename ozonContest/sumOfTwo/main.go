@@ -1,38 +1,68 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"strconv"
-	"strings"
 )
 
-//Дано целое положительное число "target". Также дана последовательность из целых положительных чисел.
-//Необходимо записать в выходной файл "1", если в последовательности есть два числа сумма,
-// которых равна значению "target" или "0" если таких нет
+func parseBytes(f *os.File) int {
 
-func parseBytes(b []byte) int {
-	strInput := strings.Split(string(b), "\n")
-	if len(strInput) < 2 {
-		fmt.Printf("strInput = %v len = %v\n", strInput, len(strInput))
-		panic("strInput< 2")
-	}
+	br := bufio.NewReader(f)
 
-	sum, err := strconv.Atoi(strInput[0])
-	if err != nil {
-		panic("sum read err:" + err.Error())
-	}
-
+	sum := 0
+	sumIsSet := false
 	sumsArr := make(map[int]struct{}, 0)
 
-	strs := strings.Split(strInput[len(strInput)-1], " ")
-	for _, str := range strs {
-		strInt, err := strconv.Atoi(str)
-		if err != nil {
-			panic("strArr read err:" + err.Error())
+	negative := false
+	digit := make([]byte, 0)
+
+	for {
+		b, err := br.ReadByte()
+		if err != nil && err != io.EOF {
+			panic("reader err: " + err.Error())
+		}
+		if err == io.EOF {
+			return 0
 		}
 
+		if !isSep(b) {
+			if string(b) == "-" {
+				negative = !negative
+				continue
+			}
+			digit = append(digit, b)
+			continue
+		}
+		if len(digit) == 0 {
+			continue
+		}
+		digitInt, err := strconv.Atoi(string(digit))
+		if err != nil {
+			panic("get digitINt err " + err.Error())
+		}
+		digit = digit[:0]
+		if !sumIsSet {
+			sum = digitInt
+			sumIsSet = true
+			if negative {
+				sum = -sum
+				negative = false
+			}
+			continue
+		}
+
+		strInt := digitInt
+
+		if negative {
+			strInt = -strInt
+			negative = false
+		}
+
+		fmt.Printf("sum = %d readedInt = %v\n", sum, strInt)
 		_, ok := sumsArr[strInt]
 		if ok {
 			return 1
@@ -43,6 +73,13 @@ func parseBytes(b []byte) int {
 	return 0
 }
 
+func isSep(b byte) bool {
+
+	str := string(b)
+
+	return str == " " || str == "\t" || str == "\n"
+}
+
 func main() {
 
 	file, err := os.Open("input.txt")
@@ -50,27 +87,9 @@ func main() {
 		panic("open file" + err.Error())
 	}
 
-	b, err := ioutil.ReadAll(file)
+	result := parseBytes(file)
 
-	//err = file.Close()
-	//if err != nil {
-	//	panic("close err: " + err.Error())
-	//}
-
-	result := parseBytes(b)
-
-	f, err := os.Create("./output.txt")
-	if err != nil {
-		panic("create err: " + err.Error())
+	if err := ioutil.WriteFile("./output.txt", []byte(strconv.Itoa(result)), 0666); err != nil {
+		panic("error writing out err:" + err.Error())
 	}
-
-	_, err = f.Write([]byte(strconv.Itoa(result)))
-	if err != nil {
-		panic("write err: " + err.Error())
-	}
-
-	//err = f.Close()
-	//if err != nil {
-	//	panic("close err: " + err.Error())
-	//}
 }
