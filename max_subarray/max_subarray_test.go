@@ -2,6 +2,7 @@ package max_subarray
 
 import (
 	"fmt"
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,13 +21,13 @@ func TestMaxSubArray(t *testing.T) {
 			arr: []int{},
 			rI:  0,
 			lI:  0,
-			sum: 0,
+			sum: math.MinInt32,
 		},
 		{
 			arr: []int{-2, -5, -15, -1},
-			rI:  0,
-			lI:  0,
-			sum: 0,
+			rI:  3,
+			lI:  3,
+			sum: -1,
 		},
 		{
 			arr: []int{2, 5, 15, 1},
@@ -40,10 +41,22 @@ func TestMaxSubArray(t *testing.T) {
 			lI:  3,
 			sum: 11,
 		},
+		{
+			arr: []int{2, 5, -2, 1, 3},
+			rI:  4,
+			lI:  0,
+			sum: 9,
+		},
+		{
+			arr: []int{-2, 5, -2, 1, 3},
+			rI:  4,
+			lI:  1,
+			sum: 7,
+		},
 	} {
 		fmt.Printf("i = %d\n", i)
 		checkMethod(t, arr, bruteForce)
-		//checkMethod(t, arr, recursionFind)
+		checkMethod(t, arr, recursionFind)
 	}
 }
 

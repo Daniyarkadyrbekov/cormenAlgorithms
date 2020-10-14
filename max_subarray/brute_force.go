@@ -1,25 +1,21 @@
 package max_subarray
 
-func bruteForce(arr []int) (int, int, int) {
-	maxSum := 0
-	maxRI := 0
-	maxLI := 0
-	for i, _ := range arr {
-		leftI := i
-		rightI := 0
-		sumI := arr[i]
-		for j := i + 1; j < len(arr); j++ {
-			if sumI < sumI+arr[j] {
-				sumI = sumI + arr[j]
-				rightI = j
+import "math"
+
+func bruteForce(arr []int) (left, right, sum int) {
+	sum = math.MinInt32
+
+	for i := 0; i < len(arr); i++ {
+		lsum := 0
+		for j := i; j < len(arr); j++ {
+			lsum += arr[j]
+			if lsum > sum {
+				sum = lsum
+				left = i
+				right = j
 			}
-		}
-		if sumI > maxSum {
-			maxLI = leftI
-			maxRI = rightI
-			maxSum = sumI
 		}
 	}
 
-	return maxLI, maxRI, maxSum
+	return
 }
