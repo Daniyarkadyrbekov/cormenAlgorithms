@@ -53,10 +53,17 @@ func TestMaxSubArray(t *testing.T) {
 			lI:  1,
 			sum: 7,
 		},
+		{
+			arr: []int{-2, 0, -2, 10, 20, -200, 17, 15, -400},
+			rI:  7,
+			lI:  6,
+			sum: 32,
+		},
 	} {
 		fmt.Printf("i = %d\n", i)
 		checkMethod(t, arr, bruteForce)
 		checkMethod(t, arr, recursionFind)
+		checkMethod(t, arr, linearFind)
 	}
 }
 
