@@ -1,16 +1,20 @@
 package list
 
-func deleteMiddleNode(list *List) {
+func deleteMiddleNode(head *List) *List {
 
-	if list == nil {
-		return
+	if head == nil || head.next == nil {
+		return nil
 	}
 
-	left := list
-	right := list
+	left := head
+	right := head.next
+
+	if right.next == nil {
+		return right
+	}
 
 	for {
-		if right.next == nil || right.next.next == nil {
+		if right.next == nil || right.next.next == nil || right.next.next.next == nil {
 			break
 		}
 		right = right.next.next
@@ -18,4 +22,6 @@ func deleteMiddleNode(list *List) {
 	}
 
 	left.next = left.next.next
+
+	return head
 }

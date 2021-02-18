@@ -89,3 +89,107 @@ func TestKthFromEnd(t *testing.T) {
 		require.Equal(t, 4, res)
 	}
 }
+
+func TestDeleteMiddleNode(t *testing.T) {
+
+	{
+		var list *List
+		list = deleteMiddleNode(list)
+		require.Equal(t, "", list.String())
+	}
+
+	{
+		var list *List
+		list = list.Add(0)
+
+		list = deleteMiddleNode(list)
+		require.Equal(t, "", list.String())
+	}
+
+	{
+		var list *List
+		list = list.Add(0)
+		list = list.Add(1)
+
+		list = deleteMiddleNode(list)
+		require.Equal(t, "0 ", list.String())
+	}
+
+	{
+		var list *List
+		list = list.Add(0)
+		list = list.Add(1)
+		list = list.Add(2)
+		list = list.Add(3)
+		list = list.Add(4)
+		list = list.Add(5)
+
+		list = deleteMiddleNode(list)
+		require.Equal(t, "5 4 2 1 0 ", list.String())
+	}
+
+	{
+		var list *List
+		list = list.Add(0)
+		list = list.Add(1)
+		list = list.Add(2)
+		list = list.Add(3)
+		list = list.Add(4)
+		list = list.Add(5)
+		list = list.Add(6)
+
+		list = deleteMiddleNode(list)
+		require.Equal(t, "6 5 4 2 1 0 ", list.String())
+	}
+
+}
+
+func TestListPartitions(t *testing.T) {
+
+	{
+		var list *List
+
+		list = ListPartitions(list, 5)
+		require.Equal(t, "", list.String())
+	}
+
+	{
+		var list *List
+		list = list.Add(12)
+		list = list.Add(1)
+		list = list.Add(20)
+		list = list.Add(3)
+		list = list.Add(4)
+		list = list.Add(10)
+
+		list = ListPartitions(list, 5)
+		require.Equal(t, "4 3 1 12 20 10 ", list.String())
+	}
+}
+
+func TestListPartitionsOptimized(t *testing.T) {
+
+	{
+		var list *List
+
+		list = ListPartitionsOptimized(list, 5)
+		require.Equal(t, "", list.String())
+	}
+
+	{
+		var list *List
+		list = list.Add(12)
+		list = list.Add(1)
+		list = list.Add(20)
+		list = list.Add(3)
+		list = list.Add(4)
+		list = list.Add(10)
+		list = list.Add(5)
+		list = list.Add(5)
+		list = list.Add(-7)
+		list = list.Add(32)
+
+		list = ListPartitionsOptimized(list, 5)
+		require.Equal(t, "1 3 4 -7 12 20 10 5 5 32 ", list.String())
+	}
+}
